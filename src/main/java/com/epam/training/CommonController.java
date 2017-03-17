@@ -35,53 +35,50 @@ public class CommonController {
 
     @RequestMapping("/chosenFile")
     @ResponseBody
-    public List<File> getChosenFile(@RequestParam String path) {
+    public List<File> getChosenFile(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    @RequestParam String path) throws IOException {
         List<File> fileList = new ArrayList<File>();
         File chosenFile = new File(path);
         if (chosenFile.isDirectory())
             for (File file : chosenFile.listFiles()) fileList.add(file);
+        else {
+            ServletContext context = request.getServletContext();
+            File downloadFile = new File(path);
+            FileInputStream inputStream = new FileInputStream(downloadFile);
+
+            // get MIME type of the file
+            String mimeType = context.getMimeType(path);
+            if (mimeType == null) {
+                // set to binary type if MIME mapping not found
+                mimeType = "application/octet-stream";
+            }
+            System.out.println("MIME type: " + mimeType);
+
+            // set content attributes for the response
+            response.setContentType(mimeType);
+            response.setContentLength((int) downloadFile.length());
+
+            // set headers for the response
+            String headerKey = "Content-Disposition";
+            String headerValue = String.format("attachment; filename=\"%s\"",
+                    downloadFile.getName());
+            response.setHeader(headerKey, headerValue);
+
+            // get output stream of the response
+            OutputStream outStream = response.getOutputStream();
+
+            byte[] buffer = new byte[BUFFER_SIZE];
+            int bytesRead = -1;
+
+            // write bytes read from the input stream into the output stream
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outStream.write(buffer, 0, bytesRead);
+            }
+
+            inputStream.close();
+            outStream.close();
+        }
         return fileList;
-    }
-
-    @RequestMapping("/downloadFile")
-    @ResponseBody
-    public void todo(HttpServletRequest request,
-                     HttpServletResponse response,
-                     @RequestParam String path) throws IOException {
-        ServletContext context = request.getServletContext();
-        File downloadFile = new File(path);
-        FileInputStream inputStream = new FileInputStream(downloadFile);
-
-        // get MIME type of the file
-        String mimeType = context.getMimeType(path);
-        if (mimeType == null) {
-            // set to binary type if MIME mapping not found
-            mimeType = "application/octet-stream";
-        }
-        System.out.println("MIME type: " + mimeType);
-
-        // set content attributes for the response
-        response.setContentType(mimeType);
-        response.setContentLength((int) downloadFile.length());
-
-        // set headers for the response
-        String headerKey = "Content-Disposition";
-        String headerValue = String.format("attachment; filename=\"%s\"",
-                downloadFile.getName());
-        response.setHeader(headerKey, headerValue);
-
-        // get output stream of the response
-        OutputStream outStream = response.getOutputStream();
-
-        byte[] buffer = new byte[BUFFER_SIZE];
-        int bytesRead = -1;
-
-        // write bytes read from the input stream into the output stream
-        while ((bytesRead = inputStream.read(buffer)) != -1) {
-            outStream.write(buffer, 0, bytesRead);
-        }
-
-        inputStream.close();
-        outStream.close();
     }
 }
