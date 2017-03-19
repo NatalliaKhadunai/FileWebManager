@@ -24,61 +24,74 @@ public class CommonController {
         return "/static/index.html";
     }
 
-    @RequestMapping("/rootFiles")
+    @RequestMapping("/files")
     @ResponseBody
-    public List<File> getRootFiles() {
-        List<File> fileList = new ArrayList<File>();
-        File[] fileArray = File.listRoots();
-        for (File file : fileArray) fileList.add(file);
-        return fileList;
-    }
-
-    @RequestMapping("/chosenFile")
-    @ResponseBody
-    public List<File> getChosenFile(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    @RequestParam String path) throws IOException {
-        List<File> fileList = new ArrayList<File>();
-        File chosenFile = new File(path);
-        if (chosenFile.isDirectory())
-            for (File file : chosenFile.listFiles()) fileList.add(file);
+    public List<FileDTO> getFile(@RequestParam(required = false) String path) throws IOException {
+        List<FileDTO> fileList = new ArrayList<FileDTO>();
+        if (path == null) {
+            for (File file : File.listRoots()) {
+                FileDTO fileDTO = new FileDTO();
+                fileDTO.setFullPath(file.getPath());
+                fileDTO.setFileName(file.getPath());
+                fileDTO.setDirectory(file.isDirectory());
+                fileList.add(fileDTO);
+            }
+            return fileList;
+        }
         else {
-            ServletContext context = request.getServletContext();
-            File downloadFile = new File(path);
-            FileInputStream inputStream = new FileInputStream(downloadFile);
-
-            // get MIME type of the file
-            String mimeType = context.getMimeType(path);
-            if (mimeType == null) {
-                // set to binary type if MIME mapping not found
-                mimeType = "application/octet-stream";
+            File chosenFile = new File(path);
+            if (chosenFile.isDirectory()) {
+                for (File file : chosenFile.listFiles()) {
+                    FileDTO fileDTO = new FileDTO();
+                    fileDTO.setFullPath(file.getPath());
+                    fileDTO.setFileName(file.getName());
+                    fileDTO.setDirectory(file.isDirectory());
+                    fileList.add(fileDTO);
+                }
             }
-            System.out.println("MIME type: " + mimeType);
-
-            // set content attributes for the response
-            response.setContentType(mimeType);
-            response.setContentLength((int) downloadFile.length());
-
-            // set headers for the response
-            String headerKey = "Content-Disposition";
-            String headerValue = String.format("attachment; filename=\"%s\"",
-                    downloadFile.getName());
-            response.setHeader(headerKey, headerValue);
-
-            // get output stream of the response
-            OutputStream outStream = response.getOutputStream();
-
-            byte[] buffer = new byte[BUFFER_SIZE];
-            int bytesRead = -1;
-
-            // write bytes read from the input stream into the output stream
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outStream.write(buffer, 0, bytesRead);
-            }
-
-            inputStream.close();
-            outStream.close();
         }
         return fileList;
     }
+
+    @RequestMapping("/downloadFile")
+    public void downloadChosenFile(HttpServletRequest request,
+                                   HttpServletResponse response,
+                                   @RequestParam String path) throws IOException {
+        ServletContext context = request.getServletContext();
+        File downloadFile = new File(path);
+        FileInputStream inputStream = new FileInputStream(downloadFile);
+
+        // get MIME type of the file
+        String mimeType = context.getMimeType(path);
+        if (mimeType == null) {
+            // set to binary type if MIME mapping not found
+            mimeType = "application/octet-stream";
+        }
+        System.out.println("MIME type: " + mimeType);
+
+        // set content attributes for the response
+        response.setContentType(mimeType);
+        response.setContentLength((int) downloadFile.length());
+
+        // set headers for the response
+        String headerKey = "Content-Disposition";
+        String headerValue = String.format("attachment; filename=\"%s\"",
+                downloadFile.getName());
+        response.setHeader(headerKey, headerValue);
+
+        // get output stream of the response
+        OutputStream outStream = response.getOutputStream();
+
+        byte[] buffer = new byte[BUFFER_SIZE];
+        int bytesRead = -1;
+
+        // write bytes read from the input stream into the output stream
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            outStream.write(buffer, 0, bytesRead);
+        }
+
+        inputStream.close();
+        outStream.close();
+    }
+
 }

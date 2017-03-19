@@ -3,16 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
     <script src="static/js/app.js"></script>
-   <!-- <script src="static/js/file.factory.js"></script>
-    <script src="static/js/index.controller.js"></script>-->
+<!--
+    <script src="static/js/index.controller.js"></script>
+-->
 </head>
 <body ng-app="fileApp" ng-controller="indexCtrl as ctrl">
-<ul>
-    <li ng-repeat="file in ctrl.files">
-        <a href="#" ng-click="ctrl.updateFiles(file)">{{file}}</a>
-    </li>
-</ul>
+<div class="container">
+    <table class="table">
+        <thead>
+        <tr>
+            <th ng-click="$ctrl.sort('fileName')">Filename</th>
+            <th ng-click="$ctrl.sort('directory')">Type</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="file in ctrl.files | orderBy : $ctrl.sortField : $ctrl.sortOrder">
+            <td><a ng-click="ctrl.updateFiles(file)">{{file.fileName}}</a></td>
+            <td>
+                <span ng-if="!file.directory">file</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>
