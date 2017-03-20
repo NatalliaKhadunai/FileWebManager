@@ -8,7 +8,7 @@
         let $ctrl = this;
         $ctrl.files = [];
         $ctrl.currentPath = '';
-        $ctrl.sortField = '-directory';
+        $ctrl.sortField = 'directory';
         $ctrl.sortOrder = true;
 
         $ctrl.loadRootFiles = function () {
@@ -31,7 +31,7 @@
             else {
                 var url = '/downloadFile';
                 var param = 'path=' + $ctrl.currentPath + chosenFile.fileName;
-                $window.open(url + '?' + param);
+                $window.open(encodeURI(url + '?' + param));
             }
         };
         $ctrl.sort = function (sortField) {
