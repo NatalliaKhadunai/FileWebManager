@@ -1,7 +1,7 @@
-package com.epam.training;
+package com.epam.training.controller;
 
+import com.epam.training.dto.FileDTO;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletContext;
@@ -11,17 +11,19 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @Controller
 public class CommonController {
     private static final int BUFFER_SIZE = 4096;
 
-    @RequestMapping("/")
+    @RequestMapping("/main")
     public String getIndexPage() {
-        return "/static/index.html";
+        return "index.jsp";
     }
 
     @RequestMapping("/files")
@@ -30,10 +32,8 @@ public class CommonController {
         List<FileDTO> fileList = new ArrayList<FileDTO>();
         if (path == null) {
             for (File file : File.listRoots()) {
-                FileDTO fileDTO = new FileDTO();
-                fileDTO.setFullPath(file.getPath());
+                FileDTO fileDTO = createDTO(file);
                 fileDTO.setFileName(file.getPath());
-                fileDTO.setDirectory(file.isDirectory());
                 fileList.add(fileDTO);
             }
             return fileList;
@@ -42,10 +42,7 @@ public class CommonController {
             File chosenFile = new File(path);
             if (chosenFile.isDirectory()) {
                 for (File file : chosenFile.listFiles()) {
-                    FileDTO fileDTO = new FileDTO();
-                    fileDTO.setFullPath(file.getPath());
-                    fileDTO.setFileName(file.getName());
-                    fileDTO.setDirectory(file.isDirectory());
+                    FileDTO fileDTO = createDTO(file);
                     fileList.add(fileDTO);
                 }
             }
@@ -94,4 +91,19 @@ public class CommonController {
         outStream.close();
     }
 
+    private FileDTO createDTO(File file) throws IOException {
+        FileDTO fileDTO = new FileDTO();
+        BasicFileAttributes fileAttributes = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+        fileDTO.setFullPath(file.getPath());
+        fileDTO.setFileName(file.getName());
+        fileDTO.setDirectory(file.isDirectory());
+        fileDTO.setFileSize(toMegabyte(file.length()));
+        fileDTO.setCreationDate(new Date(fileAttributes.creationTime().toMillis()));
+        fileDTO.setModificationDate(new Date(fileAttributes.lastModifiedTime().toMillis()));
+        return fileDTO;
+    }
+
+    private Long toMegabyte(Long byteValue) {
+        return byteValue / (1024 * 1024);
+    }
 }
