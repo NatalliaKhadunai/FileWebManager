@@ -5,6 +5,7 @@ import java.util.Date;
 public class FileDTO {
     private String fileName;
     private String fullPath;
+    String contentType;
     private boolean isDirectory;
     private Date creationDate;
     private Date modificationDate;
@@ -24,6 +25,14 @@ public class FileDTO {
 
     public void setFullPath(String fullPath) {
         this.fullPath = fullPath;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
 
     public boolean isDirectory() {

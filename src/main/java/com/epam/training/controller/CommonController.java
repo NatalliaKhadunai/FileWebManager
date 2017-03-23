@@ -1,8 +1,10 @@
 package com.epam.training.controller;
 
 import com.epam.training.dto.FileDTO;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +15,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,8 +25,11 @@ public class CommonController {
     private static final int BUFFER_SIZE = 4096;
 
     @RequestMapping("/main")
-    public String getIndexPage() {
-        return "index.jsp";
+    public ModelAndView getIndexPage(Principal principal) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("username", principal.getName());
+        modelAndView.setViewName("index.jsp");
+        return modelAndView;
     }
 
     @RequestMapping("/files")
@@ -96,14 +102,15 @@ public class CommonController {
         BasicFileAttributes fileAttributes = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
         fileDTO.setFullPath(file.getPath());
         fileDTO.setFileName(file.getName());
+        if (file.isFile()) fileDTO.setContentType(FilenameUtils.getExtension(file.getAbsolutePath()));
         fileDTO.setDirectory(file.isDirectory());
-        fileDTO.setFileSize(toMegabyte(file.length()));
+        fileDTO.setFileSize(toKilobyte(file.length()));
         fileDTO.setCreationDate(new Date(fileAttributes.creationTime().toMillis()));
         fileDTO.setModificationDate(new Date(fileAttributes.lastModifiedTime().toMillis()));
         return fileDTO;
     }
 
-    private Long toMegabyte(Long byteValue) {
-        return byteValue / (1024 * 1024);
+    private Long toKilobyte(Long byteValue) {
+        return byteValue / (1024);
     }
 }

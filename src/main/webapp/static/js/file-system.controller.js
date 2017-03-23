@@ -6,7 +6,7 @@
             $ctrl.files = [];
             $ctrl.currentPathElements = [];
             $ctrl.sortField = 'fileName';
-            $ctrl.sortOrder = true;
+            $ctrl.search = {};
 
             $ctrl.loadRootFiles = function () {
                 $http.get('/training/files').then(function (response) {
@@ -44,11 +44,11 @@
             };
             $ctrl.sort = function (sortField) {
                 if ($ctrl.sortField == sortField) {
-                    $ctrl.sortOrder ? $ctrl.sortOrder = false : $ctrl.sortOrder = true;
+                    if ($ctrl.sortField.indexOf('-') == 0) $ctrl.sortField = $ctrl.sortField.replace('-', '');
+                    else $ctrl.sortField = '-' + $ctrl.sortField;
                 }
                 else {
                     $ctrl.sortField = sortField;
-                    $ctrl.sortOrder = true;
                 }
             };
             $ctrl.directoryBack = function () {

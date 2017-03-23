@@ -25,13 +25,13 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/training/main").access("isAuthenticated()")
+                .antMatchers("/training/main").access("hasAuthority('ADMIN')")
                 .anyRequest().permitAll()
                 .and()
                 .formLogin().loginPage("/training/login")
                 .usernameParameter("username").passwordParameter("password")
                 .and()
-                .logout().logoutSuccessUrl("/login?logout")
+                .logout().logoutSuccessUrl("/training/login?logout")
                 .and()
                 .csrf();
     }

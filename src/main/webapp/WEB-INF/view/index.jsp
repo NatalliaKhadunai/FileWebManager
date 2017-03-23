@@ -14,11 +14,14 @@
 <body>
 <div class="container" ng-controller="fileSystemCtrl as ctrl">
     <a href="#" ng-click="ctrl.directoryBack()">Back</a>
+    <a href="/training/logout">Logout</a>
+    <p>Hello, ${username}! Enter filename for search:</p>
+    <input type="text" ng-model="ctrl.search.fileName">
     <table class="table">
         <thead>
         <tr>
             <th ng-click="ctrl.sort('fileName')">Filename</th>
-            <th>Type</th>
+            <th ng-click="ctrl.sort('contentType')">Type</th>
             <th ng-click="ctrl.sort('creationDate')">Creation date</th>
             <th ng-click="ctrl.sort('modificationDate')">Modification date</th>
             <th ng-click="ctrl.sort('fileSize')">Size</th>
@@ -28,16 +31,15 @@
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="file in ctrl.files | orderBy : ['-directory', ctrl.sortField]">
+        <tr ng-repeat="file in ctrl.files
+            | orderBy : ['-directory', ctrl.sortField]
+            | filter : ctrl.search">
             <td><a ng-click="ctrl.updateFiles(file)">{{file.fileName}}</a></td>
-            <td>
-                <span ng-if="file.directory">directory</span>
-                <span ng-if="!file.directory">file</span>
-            </td>
+            <td>{{file.contentType}}</td>
             <td>{{file.creationDate | date}}</td>
             <td>{{file.modificationDate | date}}</td>
-            <td>{{file.fileSize}} MB</td>
-            <sec:authorize access="hasRole('ROLE_ADMIN')">
+            <td>{{file.fileSize}} KB</td>
+            <sec:authorize access="hasRole('ADMIN')">
                 <td>
                     <button class="btn btn-danger" ng-click="ctrl.deleteFile(file)">Delete</button>
                 </td>
@@ -45,7 +47,7 @@
         </tr>
         </tbody>
     </table>
-    <sec:authorize access="hasRole('ROLE_ADMIN')">
+    <sec:authorize access="hasRole('ADMIN')">
         <div class="panel-group">
             <div class="panel panel-default">
                 <div class="panel-heading">Create directory</div>
