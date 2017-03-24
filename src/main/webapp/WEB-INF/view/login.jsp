@@ -5,9 +5,6 @@
     <title>Title</title>
 </head>
 <body>
-
-<h1>Spring Security Login Form (Database Authentication)</h1>
-
 <div id="login-box">
 
     <h2>Login with Username and Password</h2>

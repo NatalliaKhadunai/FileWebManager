@@ -1,7 +1,8 @@
 package com.epam.training.controller;
 
 import com.epam.training.dto.FileDTO;
-import com.epam.training.service.ImageService;
+import com.epam.training.service.FileService;
+import com.epam.training.util.ByteConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ import java.util.Date;
 @RequestMapping("/files")
 public class AdminController {
     @Autowired
-    ImageService imageService;
+    FileService fileService;
 
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     public ResponseEntity deleteFile(@RequestParam(required = true) String path) {
@@ -47,7 +48,7 @@ public class AdminController {
     public ResponseEntity addFile(HttpServletRequest request,
                                   @RequestParam String path,
                                   @RequestParam MultipartFile file) {
-        String createdFilename = imageService.saveImage(file, path, file.getOriginalFilename());
+        String createdFilename = fileService.saveFile(file, path, file.getOriginalFilename());
         return new ResponseEntity(createdFilename, HttpStatus.CREATED);
     }
 
@@ -57,14 +58,9 @@ public class AdminController {
         fileDTO.setFullPath(file.getPath());
         fileDTO.setFileName(file.getName());
         fileDTO.setDirectory(file.isDirectory());
-        fileDTO.setFileSize(toMegabyte(file.length()));
+        fileDTO.setFileSize(ByteConverter.toKilobyte(file.length()));
         fileDTO.setCreationDate(new Date(fileAttributes.creationTime().toMillis()));
         fileDTO.setModificationDate(new Date(fileAttributes.lastModifiedTime().toMillis()));
         return fileDTO;
     }
-
-    private Long toMegabyte(Long byteValue) {
-        return byteValue / (1024 * 1024);
-    }
-
 }

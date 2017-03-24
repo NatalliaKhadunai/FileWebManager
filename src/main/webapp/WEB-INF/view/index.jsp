@@ -3,7 +3,7 @@
 <html lang="en" ng-app="fileApp">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Main</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -14,8 +14,7 @@
 <body>
 <div class="container" ng-controller="fileSystemCtrl as ctrl">
     <a href="#" ng-click="ctrl.directoryBack()">Back</a>
-    <a href="/training/logout">Logout</a>
-    <p>Hello, ${username}! Enter filename for search:</p>
+    <p>Enter filename for search:</p>
     <input type="text" ng-model="ctrl.search.fileName">
     <table class="table">
         <thead>
@@ -25,7 +24,7 @@
             <th ng-click="ctrl.sort('creationDate')">Creation date</th>
             <th ng-click="ctrl.sort('modificationDate')">Modification date</th>
             <th ng-click="ctrl.sort('fileSize')">Size</th>
-            <sec:authorize access="hasRole('ROLE_ADMIN')">
+            <sec:authorize access="hasAuthority('ROLE_ADMIN')">
                 <th>Actions</th>
             </sec:authorize>
         </tr>
@@ -39,7 +38,7 @@
             <td>{{file.creationDate | date}}</td>
             <td>{{file.modificationDate | date}}</td>
             <td>{{file.fileSize}} KB</td>
-            <sec:authorize access="hasRole('ADMIN')">
+            <sec:authorize access="hasAuthority('ADMIN')">
                 <td>
                     <button class="btn btn-danger" ng-click="ctrl.deleteFile(file)">Delete</button>
                 </td>
@@ -47,7 +46,7 @@
         </tr>
         </tbody>
     </table>
-    <sec:authorize access="hasRole('ADMIN')">
+    <sec:authorize access="hasAuthority('ADMIN')">
         <div class="panel-group">
             <div class="panel panel-default">
                 <div class="panel-heading">Create directory</div>

@@ -1,20 +1,20 @@
 package com.epam.training.service.impl;
 
-import com.epam.training.service.ImageService;
+import com.epam.training.service.FileService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 
 @Service
-public class ImageServiceImpl implements ImageService {
+public class FileServiceImpl implements FileService {
 
     @Override
-    public String saveImage(MultipartFile imageSourceFile, String destinationDirectory, String newFilename) {
+    public String saveFile(MultipartFile sourceFile, String destinationDirectory, String newFilename) {
         InputStream inputStream = null;
         OutputStream outputStream = null;
         try {
-            inputStream = imageSourceFile.getInputStream();
+            inputStream = sourceFile.getInputStream();
             File newFile = new File(destinationDirectory + "\\" + newFilename);
             if (!newFile.exists()) {
                 newFile.createNewFile();

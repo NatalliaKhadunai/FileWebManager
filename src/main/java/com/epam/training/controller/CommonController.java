@@ -1,10 +1,10 @@
 package com.epam.training.controller;
 
 import com.epam.training.dto.FileDTO;
+import com.epam.training.util.ByteConverter;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -25,11 +25,8 @@ public class CommonController {
     private static final int BUFFER_SIZE = 4096;
 
     @RequestMapping("/main")
-    public ModelAndView getIndexPage(Principal principal) {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("username", principal.getName());
-        modelAndView.setViewName("index.jsp");
-        return modelAndView;
+    public String getIndexPage(Principal principal) {
+        return "index.jsp";
     }
 
     @RequestMapping("/files")
@@ -64,31 +61,24 @@ public class CommonController {
         File downloadFile = new File(path);
         FileInputStream inputStream = new FileInputStream(downloadFile);
 
-        // get MIME type of the file
         String mimeType = context.getMimeType(path);
         if (mimeType == null) {
-            // set to binary type if MIME mapping not found
             mimeType = "application/octet-stream";
         }
-        System.out.println("MIME type: " + mimeType);
 
-        // set content attributes for the response
         response.setContentType(mimeType);
         response.setContentLength((int) downloadFile.length());
 
-        // set headers for the response
         String headerKey = "Content-Disposition";
         String headerValue = String.format("attachment; filename=\"%s\"",
                 downloadFile.getName());
         response.setHeader(headerKey, headerValue);
 
-        // get output stream of the response
         OutputStream outStream = response.getOutputStream();
 
         byte[] buffer = new byte[BUFFER_SIZE];
         int bytesRead = -1;
 
-        // write bytes read from the input stream into the output stream
         while ((bytesRead = inputStream.read(buffer)) != -1) {
             outStream.write(buffer, 0, bytesRead);
         }
@@ -97,6 +87,7 @@ public class CommonController {
         outStream.close();
     }
 
+    //TODO: move method, make it public for AdminController and CommonController to use it
     private FileDTO createDTO(File file) throws IOException {
         FileDTO fileDTO = new FileDTO();
         BasicFileAttributes fileAttributes = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
@@ -104,13 +95,9 @@ public class CommonController {
         fileDTO.setFileName(file.getName());
         if (file.isFile()) fileDTO.setContentType(FilenameUtils.getExtension(file.getAbsolutePath()));
         fileDTO.setDirectory(file.isDirectory());
-        fileDTO.setFileSize(toKilobyte(file.length()));
+        fileDTO.setFileSize(ByteConverter.toKilobyte(file.length()));
         fileDTO.setCreationDate(new Date(fileAttributes.creationTime().toMillis()));
         fileDTO.setModificationDate(new Date(fileAttributes.lastModifiedTime().toMillis()));
         return fileDTO;
-    }
-
-    private Long toKilobyte(Long byteValue) {
-        return byteValue / (1024);
     }
 }

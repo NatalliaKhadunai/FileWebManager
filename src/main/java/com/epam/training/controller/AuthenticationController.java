@@ -51,16 +51,17 @@ public class AuthenticationController {
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     public String registry(@ModelAttribute("user") UserDTO userDTO, HttpServletRequest request) {
         User user = createUserObject(userDTO);
-        user.addRole(Role.GUEST);
         userDAO.save(user);
         authenticateUserAndSetSession(userDTO, request);
         return "redirect:/training/main";
     }
 
+    //TODO: move method
     private User createUserObject(UserDTO userDTO) {
         User user = new User();
         user.setUsername(userDTO.getUsername());
         user.setPasswordHash(encoder.encode(userDTO.getPassword()));
+        user.addRole(Role.GUEST);
         return user;
     }
 
