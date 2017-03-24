@@ -31,7 +31,7 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .formLogin().loginPage("/training/login")
                 .usernameParameter("username").passwordParameter("password")
                 .and()
-                .logout().logoutSuccessUrl("/training/login?logout")
+                .logout().logoutUrl("/training/logout").logoutSuccessUrl("/training/login?logout")
                 .and()
                 .csrf();
     }

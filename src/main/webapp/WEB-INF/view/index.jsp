@@ -14,6 +14,7 @@
 <body>
 <div class="container" ng-controller="fileSystemCtrl as ctrl">
     <a href="#" ng-click="ctrl.directoryBack()">Back</a>
+    <a href="/training/logout">Logout</a>
     <p>Enter filename for search:</p>
     <input type="text" ng-model="ctrl.search.fileName">
     <table class="table">
