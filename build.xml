@@ -1,0 +1,81 @@
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="TrainingProject" default="main" basedir=".">
+    <description>
+        Create a Spring MVC (WAR) with Ant build script
+    </description>
+
+    <!-- Project Structure -->
+    <property name="jdk.version" value="1.8" />
+    <property name="projectName" value="TrainingProject" />
+    <property name="src.dir" location="src/main/java" />
+    <property name="web.dir" value="src/main/webapp" />
+    <property name="web.classes.dir" location="${web.dir}/WEB-INF/classes" />
+    <property name="target.dir" location="target" />
+    <property name="target.temp.dir" location="target/temp" />
+    <property name="lib.dir" value="lib" />
+
+    <!-- ivy start -->
+    <target name="resolve" description="retrieve dependencies with ivy">
+        <ivy:retrieve/>
+        <ivy:cachepath pathid="compile.path" conf="compile" />
+        <ivy:cachepath pathid="runtime.path" conf="runtime" />
+        <ivy:cachepath pathid="test.path" conf="test" />
+    </target>
+
+    <!-- Compile Java source from ${src.dir} and output it to ${web.classes.dir} -->
+    <target name="compile" depends="init, resolve" description="compile source code">
+        <mkdir dir="${web.classes.dir}" />
+        <javac destdir="${web.classes.dir}" source="${jdk.version}" target="${jdk.version}"
+               debug="true" includeantruntime="false" classpathref="compile.path">
+            <src path="${src.dir}" />
+        </javac>
+    </target>
+
+    <!-- Create the final WAR file for deployment -->
+    <target name="package" depends="clean, compile"
+            description="create a war file">
+
+        <!-- ivy get dependencies and put it in ${lib.dir} -->
+        <ivy:retrieve pattern="${lib.dir}/[artifact]-[revision].[ext]" conf="runtime" />
+
+        <war destfile="${target.dir}/helloproject.war" webxml="${web.dir}/WEB-INF/web.xml">
+
+            <webinf dir="${web.dir}/WEB-INF" />
+            <lib dir="${lib.dir}" />
+            <zipfileset dir="${web.dir}/resources" prefix="resources" />
+        </war>
+    </target>
+
+    <!-- Create folders -->
+    <target name="init">
+        <mkdir dir="${src.dir}" />
+        <mkdir dir="${target.dir}" />
+        <mkdir dir="${web.classes.dir}" />
+    </target>
+
+    <!-- Delete folders -->
+    <target name="clean" description="clean up">
+        <delete dir="${web.classes.dir}" />
+        <delete dir="${target.dir}" />
+    </target>
+
+    <target name="main" depends="package" />
+
+</project>
+<!--
+<project name="convertPomToIvy" basedir="." default="convert"
+         xmlns:ivy="antlib:fr.jayasoft.ivy.ant"
+         xmlns:ac="antlib:net.sf.antcontrib">
+
+    <path id="antlib.classpath">
+        <fileset dir="C:/lib" includes="*.jar"/>
+    </path>
+
+    <taskdef uri="antlib:fr.jayasoft.ivy.ant"
+             resource="fr/jayasoft/ivy/ant/antlib.xml"
+             classpathref="antlib.classpath"
+             loaderref="antlib.classpath.loader"/>
+
+    <target name="convert">
+        <ivy:convertpom pomFile="pom.xml" ivyFile="ivy.xml" />
+    </target>
+</project>-->
