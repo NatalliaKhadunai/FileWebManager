@@ -4,14 +4,14 @@
 		module="TrainingProject"
 		revision="1.0-SNAPSHOT"
 		status="integration"
-		publication="20170323152821"
+		publication="20170325101207"
 	>
 		<description homepage="" />
 		<m:properties__hibernate.version>5.2.9.Final</m:properties__hibernate.version>
 		<m:properties__spring.security.version>4.2.2.RELEASE</m:properties__spring.security.version>
 		<m:properties__jstl.version>1.2</m:properties__jstl.version>
 		<m:properties__spring.version>4.3.1.RELEASE</m:properties__spring.version>
-		<m:maven.plugins>org.apache.tomcat.maven__tomcat7-maven-plugin__2.2|org.apache.maven.plugins__maven-compiler-plugin__3.5.1</m:maven.plugins>
+		<m:maven.plugins>org.apache.tomcat.maven__tomcat7-maven-plugin__2.2|org.apache.maven.plugins__maven-compiler-plugin__3.5.1|org.apache.maven.plugins__maven-war-plugin__null</m:maven.plugins>
 	</info>
 	<configurations>
 		<conf name="default" visibility="public" description="runtime dependencies and master artifact can be used with this conf" extends="runtime,master"/>
@@ -29,7 +29,7 @@
 		<artifact name="TrainingProject" type="war" ext="war" conf="master"/>
 	</publications>
 	<dependencies>
-		<dependency org="javax.servlet" name="javax.servlet-api" rev="3.1.0" force="true" conf="provided->compile(*),provided(*),runtime(*),master(*)"/>
+		<dependency org="javax.servlet" name="javax.servlet-api" rev="3.1.0" force="true" conf="compile->compile(*),master(*);runtime->runtime(*)"/>
 		<dependency org="org.springframework" name="spring-core" rev="4.3.1.RELEASE" force="true" conf="compile->compile(*),master(*);runtime->runtime(*)"/>
 		<dependency org="org.springframework" name="spring-context" rev="4.3.1.RELEASE" force="true" conf="compile->compile(*),master(*);runtime->runtime(*)"/>
 		<dependency org="org.springframework" name="spring-beans" rev="4.3.1.RELEASE" force="true" conf="compile->compile(*),master(*);runtime->runtime(*)"/>
