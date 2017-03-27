@@ -33,7 +33,7 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout().logoutUrl("/training/logout").logoutSuccessUrl("/training/login?logout")
                 .and()
-                .csrf();
+                .csrf().disable();
     }
 
     @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
