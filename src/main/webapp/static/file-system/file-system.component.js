@@ -1,8 +1,11 @@
 (function () {
     'use strict';
     angular.module('fileApp')
-        .component('fileSystem', {
+        .component('fileSystemComponent', {
             templateUrl: '/static/file-system/file-system.template.html',
-            controller: 'fileSystemCtrl'
+            controller: 'fileSystemCtrl',
+            bindings: {
+                userRoles: '='
+            }
         });
 })();

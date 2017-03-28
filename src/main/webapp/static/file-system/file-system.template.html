@@ -10,7 +10,7 @@
         <th ng-click="$ctrl.sort('modificationDate')">Modification date</th>
         <th ng-click="$ctrl.sort('fileSize')">Size</th>
         <!--TODO: get user role from server-->
-        <th ng-show="false">Actions</th>
+        <th ng-show="$ctrl.isLoggedUserAdmin()">Actions</th>
     </tr>
     </thead>
     <tbody>
@@ -23,13 +23,13 @@
         <td>{{file.modificationDate | date}}</td>
         <td>{{file.fileSize}} KB</td>
         <!--TODO: get user role from server-->
-        <td ng-show="false">
+        <td ng-show="$ctrl.isLoggedUserAdmin()">
             <button class="btn btn-danger" ng-click="$ctrl.deleteFile(file)">Delete</button>
         </td>
     </tr>
     </tbody>
 </table>
-<div ng-show="false">
+<div ng-show="$ctrl.isLoggedUserAdmin()">
     <div class="panel-group">
         <div class="panel panel-default">
             <div class="panel-heading">Create directory</div>

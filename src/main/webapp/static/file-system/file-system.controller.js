@@ -1,7 +1,7 @@
 (function () {
     'use strict';
     angular.module('fileApp')
-        .controller('fileSystemCtrl', function indexController($http, $window) {
+        .controller('fileSystemCtrl', function ($http, $window) {
             let $ctrl = this;
             $ctrl.files = [];
             $ctrl.currentPathElements = [];
@@ -18,7 +18,7 @@
                     $http({
                         url: '/training/files',
                         method: 'GET',
-                        params: {path: $ctrl.currentPathElements.join('\\') + '\\' + chosenFile.fileName}
+                        params: {path: $ctrl.formCurrentPath() + '\\' + chosenFile.fileName}
                     }).then(function (response) {
                         $ctrl.files = response.data;
                         $ctrl.currentPathElements.push(chosenFile.fileName);
@@ -26,7 +26,7 @@
                 }
                 else {
                     var url = '/training/downloadFile';
-                    var param = 'path=' + $ctrl.currentPathElements.join('\\') + '\\' + chosenFile.fileName;
+                    var param = 'path=' + $ctrl.formCurrentPath() + '\\' + chosenFile.fileName;
                     $window.open(encodeURI(url + '?' + param));
                 }
             };
@@ -34,7 +34,7 @@
                 $http({
                     url: '/training/admin/delete',
                     method: 'DELETE',
-                    params: {path: $ctrl.currentPathElements.join('\\') + '\\' + chosenFile.fileName}
+                    params: {path: $ctrl.formCurrentPath() + '\\' + chosenFile.fileName}
                 }).then(function () {
                     var index = $ctrl.files.indexOf(chosenFile);
                     if (index > -1) {
@@ -57,7 +57,7 @@
                     $http({
                         url: '/training/files',
                         method: 'GET',
-                        params: {path: $ctrl.currentPathElements.join('\\')}
+                        params: {path: $ctrl.formCurrentPath()}
                     }).then(function (response) {
                         $ctrl.files = response.data;
                     });
@@ -69,13 +69,19 @@
             };
             $ctrl.createDirectory = function () {
                 $http.post('/training/admin/addDirectory',
-                    $ctrl.currentPathElements.join('\\') + '\\' + $ctrl.newDirectoryName)
+                    $ctrl.formCurrentPath() + '\\' + $ctrl.newDirectoryName)
                     .then(function (response) {
                         $ctrl.files.push(response.data);
                     });
             };
-            $ctrl.formPath = function () {
+            $ctrl.formCurrentPath = function () {
                 return $ctrl.currentPathElements.join('\\');
+            };
+            $ctrl.isLoggedUserAdmin = function () {
+                for (var i=0;i<$ctrl.userRoles.length;i++) {
+                    if ($ctrl.userRoles[i].authority === 'ADMIN') return true;
+                };
+                return false;
             };
             $ctrl.loadRootFiles();
         });

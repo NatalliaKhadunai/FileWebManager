@@ -1,6 +1,9 @@
 package com.epam.training.controller;
 
+import com.epam.training.dao.UserDAO;
 import com.epam.training.dto.FileDTO;
+import com.epam.training.entity.Role;
+import com.epam.training.entity.User;
 import com.epam.training.service.FileService;
 import com.epam.training.util.ByteConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +19,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
     @Autowired
-    FileService fileService;
+    private FileService fileService;
+    @Autowired
+    private UserDAO userDAO;
 
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     public ResponseEntity deleteFile(@RequestParam(required = true) String path) {
@@ -50,6 +56,47 @@ public class AdminController {
                                   @RequestParam MultipartFile file) {
         fileService.saveFile(file, path, file.getOriginalFilename());
         return "redirect:/training/main";
+    }
+
+    @RequestMapping("/users")
+    @ResponseBody
+    public List<User> getUsers() {
+        return userDAO.getUsers();
+    }
+
+    @RequestMapping(value = "/addAdminPermissions", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity addAdminPermissions(@RequestBody User user) {
+        User userPersistent = userDAO.getUser(user.getUsername());
+        if (userPersistent != null) {
+            userPersistent.addRole(Role.ADMIN);
+            userDAO.update(userPersistent);
+            return new ResponseEntity(HttpStatus.ACCEPTED);
+        }
+        else return new ResponseEntity(HttpStatus.NOT_FOUND);
+    }
+
+    @RequestMapping(value = "/revokeAdminPermissions", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity revokeAdminPermissions(@RequestBody User user) {
+        User userPersistent = userDAO.getUser(user.getUsername());
+        if (userPersistent != null) {
+            userPersistent.getRoles().remove(Role.ADMIN);
+            userDAO.update(userPersistent);
+            return new ResponseEntity(HttpStatus.ACCEPTED);
+        }
+        else return new ResponseEntity(HttpStatus.NOT_FOUND);
+    }
+
+    @RequestMapping(value = "/deleteUser", method = RequestMethod.DELETE)
+    @ResponseBody
+    public ResponseEntity deleteUser(@RequestParam String username) {
+        User userPersistent = userDAO.getUser(username);
+        if (userPersistent != null) {
+            userDAO.delete(userPersistent);
+            return new ResponseEntity(HttpStatus.ACCEPTED);
+        }
+        else return new ResponseEntity(HttpStatus.NOT_FOUND);
     }
 
     private FileDTO createDTO(File file) throws IOException {

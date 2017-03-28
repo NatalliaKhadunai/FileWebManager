@@ -3,6 +3,8 @@ package com.epam.training.controller;
 import com.epam.training.dto.FileDTO;
 import com.epam.training.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Controller
@@ -67,5 +70,13 @@ public class CommonController {
                 downloadFile.getName());
         response.setHeader(headerKey, headerValue);
         fileService.writeFile(downloadFile, response.getOutputStream());
+    }
+
+    @RequestMapping("/role")
+    @ResponseBody
+    public Collection<SimpleGrantedAuthority> getCurrentUserRole() {
+        Collection<SimpleGrantedAuthority> authorities =
+                (Collection<SimpleGrantedAuthority>)SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+        return authorities;
     }
 }

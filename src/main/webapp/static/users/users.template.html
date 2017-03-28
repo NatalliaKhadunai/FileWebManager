@@ -1,0 +1,18 @@
+<table class="table">
+    <thead>
+    <th>Username</th>
+    <th>Roles</th>
+    <th>Action</th>
+    </thead>
+    <tbody>
+    <tr ng-repeat="user in $ctrl.users">
+        <td>{{user.username}}</td>
+        <td>{{user.roles}}</td>
+        <td>
+            <button class="btn" ng-click="$ctrl.addAdminPermissions(user)">Add Admin permissions</button>
+            <button class="btn" ng-click="$ctrl.revokeAdminPermissions(user)">Revoke Admin permissions</button>
+            <button class="btn" ng-click="$ctrl.deleteUser(user)">Delete</button>
+        </td>
+    </tr>
+    </tbody>
+</table>
