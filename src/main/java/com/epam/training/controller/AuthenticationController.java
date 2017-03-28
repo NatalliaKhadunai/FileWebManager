@@ -67,7 +67,6 @@ public class AuthenticationController {
         return "redirect:/training/login?logout";
     }
 
-    //TODO: move method
     private User createUserObject(UserDTO userDTO) {
         User user = new User();
         user.setUsername(userDTO.getUsername());
@@ -80,13 +79,8 @@ public class AuthenticationController {
         String username = userDTO.getUsername();
         String password = userDTO.getPassword();
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
-
-        // generate session if one doesn't exist
-        request.getSession();
-
         token.setDetails(new WebAuthenticationDetails(request));
         Authentication authenticatedUser = authenticationManager.authenticate(token);
-
         SecurityContextHolder.getContext().setAuthentication(authenticatedUser);
     }
 }

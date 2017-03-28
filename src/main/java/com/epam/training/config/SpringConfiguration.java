@@ -53,7 +53,7 @@ public class SpringConfiguration extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    public JpaTransactionManager jpaTransMan(){
+    public JpaTransactionManager jpaTransactionManager(){
         JpaTransactionManager jtManager = new JpaTransactionManager(
                 entityManagerFactory().getObject());
         return jtManager;

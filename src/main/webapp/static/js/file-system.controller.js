@@ -32,7 +32,7 @@
             };
             $ctrl.deleteFile = function (chosenFile) {
                 $http({
-                    url: '/training/files/delete',
+                    url: '/training/admin/delete',
                     method: 'DELETE',
                     params: {path: $ctrl.currentPathElements.join('\\') + '\\' + chosenFile.fileName}
                 }).then(function () {
@@ -68,7 +68,7 @@
                 }
             };
             $ctrl.createDirectory = function () {
-                $http.post('/training/files/addDirectory',
+                $http.post('/training/admin/addDirectory',
                     $ctrl.currentPathElements.join('\\') + '\\' + $ctrl.newDirectoryName)
                     .then(function (response) {
                         $ctrl.files.push(response.data);

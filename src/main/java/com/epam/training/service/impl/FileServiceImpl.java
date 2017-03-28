@@ -8,6 +8,7 @@ import java.io.*;
 
 @Service
 public class FileServiceImpl implements FileService {
+    private static final int BUFFER_SIZE = 4096;
 
     @Override
     public String saveFile(MultipartFile sourceFile, String destinationDirectory, String newFilename) {
@@ -32,5 +33,20 @@ public class FileServiceImpl implements FileService {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public void writeFile(File file, OutputStream outputStream) throws IOException {
+        FileInputStream inputStream = new FileInputStream(file);
+
+        byte[] buffer = new byte[BUFFER_SIZE];
+        int bytesRead = -1;
+
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            outputStream.write(buffer, 0, bytesRead);
+        }
+
+        inputStream.close();
+        outputStream.close();
     }
 }

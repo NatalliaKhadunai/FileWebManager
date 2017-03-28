@@ -60,7 +60,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Upload file</div>
                 <div class="panel-body">
-                    <form action="/training/files/addFile" method="post" enctype="multipart/form-data">
+                    <form action="/training/admin/addFile" method="post" enctype="multipart/form-data">
                         <p>Choose file:</p>
                         <input type="file" name="file">
                         <input type="hidden" name="path" ng-value="ctrl.formPath()">

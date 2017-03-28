@@ -1,5 +1,12 @@
 package com.epam.training.dto;
 
+import com.epam.training.util.ByteConverter;
+import org.apache.commons.io.FilenameUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Date;
 
 public class FileDTO {
@@ -65,5 +72,18 @@ public class FileDTO {
 
     public void setFileSize(Long fileSize) {
         this.fileSize = fileSize;
+    }
+
+    public static FileDTO createDTO(File file) throws IOException {
+        FileDTO fileDTO = new FileDTO();
+        BasicFileAttributes fileAttributes = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+        fileDTO.setFullPath(file.getPath());
+        fileDTO.setFileName(file.getName());
+        if (file.isFile()) fileDTO.setContentType(FilenameUtils.getExtension(file.getAbsolutePath()));
+        fileDTO.setDirectory(file.isDirectory());
+        fileDTO.setFileSize(ByteConverter.toKilobyte(file.length()));
+        fileDTO.setCreationDate(new Date(fileAttributes.creationTime().toMillis()));
+        fileDTO.setModificationDate(new Date(fileAttributes.lastModifiedTime().toMillis()));
+        return fileDTO;
     }
 }

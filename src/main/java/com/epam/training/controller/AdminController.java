@@ -18,7 +18,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Date;
 
 @Controller
-@RequestMapping("/files")
+@RequestMapping("/admin")
 public class AdminController {
     @Autowired
     FileService fileService;
@@ -45,11 +45,11 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/addFile", method = RequestMethod.POST)
-    public ResponseEntity addFile(HttpServletRequest request,
+    public String addFile(HttpServletRequest request,
                                   @RequestParam String path,
                                   @RequestParam MultipartFile file) {
-        String createdFilename = fileService.saveFile(file, path, file.getOriginalFilename());
-        return new ResponseEntity(createdFilename, HttpStatus.CREATED);
+        fileService.saveFile(file, path, file.getOriginalFilename());
+        return "redirect:/training/main";
     }
 
     private FileDTO createDTO(File file) throws IOException {
