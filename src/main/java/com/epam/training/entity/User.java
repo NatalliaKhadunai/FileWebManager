@@ -15,7 +15,7 @@ public class User {
     private String username;
     @Column(name = "PASSWORD")
     private String passwordHash;
-    @ElementCollection(targetClass = Role.class)
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "USER_ROLE",
             joinColumns = @JoinColumn(name = "U_ID"))
     @Column(name = "ROLE")
