@@ -1,40 +1,16 @@
 (function () {
     'use strict';
     angular.module('fileApp')
-        .controller('usersCtrl', function ($http) {
+        .controller('usersCtrl', function ($http, usersSrv) {
             let $ctrl = this;
             $ctrl.addAdminPermissions = function (user) {
-                $http.post('/training/admin/addAdminPermissions',user)
-                    .then(function (response) {
-                        user.roles.push('ADMIN');
-                    }, function (response) {
-                        alert(response.status);
-                    });
+                usersSrv.addAdminPermissions(user);
             };
             $ctrl.revokeAdminPermissions = function (user) {
-                $http.post('/training/admin/revokeAdminPermissions',user)
-                    .then(function (response) {
-                        var index = user.roles.indexOf('ADMIN');
-                        if (index > -1) {
-                            user.roles.splice(index, 1);
-                        }
-                    }, function (response) {
-                        alert(response.status);
-                    });
+                usersSrv.revokeAdminPermissions(user);
             };
             $ctrl.deleteUser = function (user) {
-                $http({
-                    url: '/training/admin/deleteUser',
-                    method: 'DELETE',
-                    params: {username: user.username}
-                }).then(function () {
-                    var index = $ctrl.users.indexOf(user);
-                    if (index > -1) {
-                        $ctrl.users.splice(index, 1);
-                    }
-                }, function (response) {
-                    alert(response.status);
-                });
+                usersSrv.deleteUser(user);
             };
         });
 })();

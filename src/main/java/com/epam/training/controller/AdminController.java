@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
+import java.security.Principal;
 
 @Controller
 @RequestMapping("/admin")
@@ -64,17 +65,23 @@ public class AdminController {
     public ResponseEntity addAdminPermissions(@RequestBody User user) {
         User userPersistent = userDAO.getUser(user.getUsername());
         if (userPersistent != null) {
-            userPersistent.addRole(Role.ADMIN);
-            userDAO.update(userPersistent);
-            return new ResponseEntity(HttpStatus.OK);
+            if (userPersistent.getRoles().contains(Role.ADMIN)) return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            else {
+                userPersistent.addRole(Role.ADMIN);
+                userDAO.update(userPersistent);
+                return new ResponseEntity(HttpStatus.OK);
+            }
         } else return new ResponseEntity(HttpStatus.NOT_FOUND);
     }
 
     @RequestMapping(value = "/revokeAdminPermissions", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity revokeAdminPermissions(@RequestBody User user) {
+    public ResponseEntity revokeAdminPermissions(@RequestBody User user, Principal principal) {
         User userPersistent = userDAO.getUser(user.getUsername());
         if (userPersistent != null) {
+            if (!userPersistent.getRoles().contains(Role.ADMIN)
+                    || userPersistent.getUsername().equals(principal.getName()))
+                return new ResponseEntity(HttpStatus.BAD_REQUEST);
             userPersistent.getRoles().remove(Role.ADMIN);
             userDAO.update(userPersistent);
             return new ResponseEntity(HttpStatus.OK);
