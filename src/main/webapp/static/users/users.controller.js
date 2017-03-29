@@ -7,6 +7,8 @@
                 $http.post('/training/admin/addAdminPermissions',user)
                     .then(function (response) {
                         user.roles.push('ADMIN');
+                    }, function (response) {
+                        alert(response.status);
                     });
             };
             $ctrl.revokeAdminPermissions = function (user) {
@@ -16,6 +18,8 @@
                         if (index > -1) {
                             user.roles.splice(index, 1);
                         }
+                    }, function (response) {
+                        alert(response.status);
                     });
             };
             $ctrl.deleteUser = function (user) {
@@ -28,6 +32,8 @@
                     if (index > -1) {
                         $ctrl.users.splice(index, 1);
                     }
+                }, function (response) {
+                    alert(response.status);
                 });
             };
         });

@@ -11,6 +11,8 @@
             $ctrl.loadRootFiles = function () {
                 $http.get('/training/files').then(function (response) {
                     $ctrl.files = response.data;
+                }, function (response) {
+                    alert(response.status);
                 });
             };
             $ctrl.updateFiles = function (chosenFile) {
@@ -22,6 +24,8 @@
                     }).then(function (response) {
                         $ctrl.files = response.data;
                         $ctrl.currentPathElements.push(chosenFile.fileName);
+                    }, function (response) {
+                        alert(response.status);
                     });
                 }
                 else {
@@ -40,6 +44,8 @@
                     if (index > -1) {
                         $ctrl.files.splice(index, 1);
                     }
+                }, function (response) {
+                    alert(response.status);
                 });
             };
             $ctrl.sort = function (sortField) {
@@ -60,6 +66,8 @@
                         params: {path: $ctrl.formCurrentPath()}
                     }).then(function (response) {
                         $ctrl.files = response.data;
+                    }, function (response) {
+                        alert(response.status);
                     });
                 }
                 else if ($ctrl.currentPathElements.length == 1) {
@@ -72,6 +80,8 @@
                     $ctrl.formCurrentPath() + '\\' + $ctrl.newDirectoryName)
                     .then(function (response) {
                         $ctrl.files.push(response.data);
+                    }, function (response) {
+                        alert(response.status);
                     });
             };
             $ctrl.formCurrentPath = function () {

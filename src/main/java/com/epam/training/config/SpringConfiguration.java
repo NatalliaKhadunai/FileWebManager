@@ -22,8 +22,6 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 @ComponentScan({ "com.epam.training.config.*" })
 @EnableTransactionManagement
 public class SpringConfiguration extends WebMvcConfigurerAdapter {
-    @Autowired
-    private Environment environment;
 
     @Bean(name = "dataSource")
     public DriverManagerDataSource dataSource() {

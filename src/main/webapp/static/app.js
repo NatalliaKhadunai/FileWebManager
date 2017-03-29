@@ -18,11 +18,8 @@
             })
             .state('users', {
                 url: '/users',
-                template: '<users-component user-roles="$resolve.userRoles" users="$resolve.users"></users-component>',
+                template: '<users-component users="$resolve.users"></users-component>',
                 resolve: {
-                    userRoles: function (usersSrv) {
-                        return usersSrv.getLoggedUserRoles();
-                    },
                     users: function (usersSrv) {
                         return usersSrv.getUsers();
                     }

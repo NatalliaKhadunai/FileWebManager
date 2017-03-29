@@ -4,7 +4,7 @@
 		module="TrainingProject"
 		revision="1.0-SNAPSHOT"
 		status="integration"
-		publication="20170325101207"
+		publication="20170329121347"
 	>
 		<description homepage="" />
 		<m:properties__hibernate.version>5.2.9.Final</m:properties__hibernate.version>

@@ -17,7 +17,7 @@
     <script src="static/file-system/file-system.controller.js"></script>
 </head>
 <body>
-<div class="container" ng-controller="fileSystemCtrl as ctrl">
+<div class="container">
     <a href="/training/logout">Logout</a>
     <ul class="nav nav-tabs">
         <li ui-sref-active="active"><a ui-sref="file-system">Main</a></li>

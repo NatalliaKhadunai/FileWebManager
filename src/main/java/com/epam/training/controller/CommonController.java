@@ -3,6 +3,8 @@ package com.epam.training.controller;
 import com.epam.training.dto.FileDTO;
 import com.epam.training.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -24,21 +26,20 @@ public class CommonController {
     private FileService fileService;
 
     @RequestMapping("/main")
-    public String getIndexPage(Principal principal) {
+    public String getIndexPage(@RequestParam (required = false) String path) {
         return "index.jsp";
     }
 
     @RequestMapping("/files")
     @ResponseBody
-    public List<FileDTO> getFile(@RequestParam(required = false) String path) throws IOException {
+    public ResponseEntity getFile(@RequestParam(required = false) String path) throws IOException {
         List<FileDTO> fileList = new ArrayList<FileDTO>();
-        if (path == null) {
+        if (path == null || path.isEmpty()) {
             for (File file : File.listRoots()) {
                 FileDTO fileDTO = FileDTO.createDTO(file);
                 fileDTO.setFileName(file.getPath());
                 fileList.add(fileDTO);
             }
-            return fileList;
         }
         else {
             File chosenFile = new File(path);
@@ -49,7 +50,7 @@ public class CommonController {
                 }
             }
         }
-        return fileList;
+        return new ResponseEntity(fileList, HttpStatus.OK);
     }
 
     @RequestMapping("/downloadFile")
@@ -74,9 +75,9 @@ public class CommonController {
 
     @RequestMapping("/role")
     @ResponseBody
-    public Collection<SimpleGrantedAuthority> getCurrentUserRole() {
+    public ResponseEntity getCurrentUserRole() {
         Collection<SimpleGrantedAuthority> authorities =
                 (Collection<SimpleGrantedAuthority>)SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-        return authorities;
+        return new ResponseEntity(authorities, HttpStatus.OK);
     }
 }

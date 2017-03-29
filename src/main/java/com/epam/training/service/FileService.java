@@ -7,6 +7,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public interface FileService {
-    String saveFile(MultipartFile sourceFile, String destinationDirectory, String newFilename);
+    String saveFile(MultipartFile sourceFile, String destinationDirectory, String newFilename) throws IOException;
     void writeFile(File file, OutputStream outputStream) throws IOException;
 }

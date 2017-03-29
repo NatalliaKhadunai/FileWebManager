@@ -14,12 +14,16 @@
         function getLoggedUserRoles() {
             return $http.get('/training/role').then(function (response) {
                 return response.data;
+            }, function (response) {
+                alert(response.status);
             });
         }
 
         function getUsers() {
             return $http.get('/training/admin/users').then(function (response) {
                 return response.data;
+            }, function (response) {
+                alert(response.status);
             });
         }
     }
