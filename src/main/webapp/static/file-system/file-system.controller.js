@@ -76,13 +76,17 @@
                 }
             };
             $ctrl.createDirectory = function () {
-                $http.post('/training/admin/addDirectory',
-                    $ctrl.formCurrentPath() + '\\' + $ctrl.newDirectoryName)
-                    .then(function (response) {
-                        $ctrl.files.push(response.data);
-                    }, function (response) {
-                        alert(response.status);
-                    });
+                if ($ctrl.currentPathElements.length === 0)
+                    alert('Directory shouldn\'t be created along with root directories');
+                else {
+                    $http.post('/training/admin/addDirectory',
+                        $ctrl.formCurrentPath() + '\\' + $ctrl.newDirectoryName)
+                        .then(function (response) {
+                            $ctrl.files.push(response.data);
+                        }, function (response) {
+                            alert(response.status);
+                        });
+                }
             };
             $ctrl.formCurrentPath = function () {
                 return $ctrl.currentPathElements.join('\\');

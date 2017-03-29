@@ -32,7 +32,7 @@ public class CommonController {
 
     @RequestMapping("/files")
     @ResponseBody
-    public ResponseEntity getFile(@RequestParam(required = false) String path) throws IOException {
+    public List<FileDTO> getFile(@RequestParam(required = false) String path) throws IOException {
         List<FileDTO> fileList = new ArrayList<FileDTO>();
         if (path == null || path.isEmpty()) {
             for (File file : File.listRoots()) {
@@ -50,7 +50,7 @@ public class CommonController {
                 }
             }
         }
-        return new ResponseEntity(fileList, HttpStatus.OK);
+        return fileList;
     }
 
     @RequestMapping("/downloadFile")
@@ -75,9 +75,9 @@ public class CommonController {
 
     @RequestMapping("/role")
     @ResponseBody
-    public ResponseEntity getCurrentUserRole() {
+    public Collection<SimpleGrantedAuthority> getCurrentUserRole() {
         Collection<SimpleGrantedAuthority> authorities =
                 (Collection<SimpleGrantedAuthority>)SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-        return new ResponseEntity(authorities, HttpStatus.OK);
+        return authorities;
     }
 }

@@ -4,18 +4,20 @@ import com.epam.training.dao.UserDAO;
 import com.epam.training.dto.FileDTO;
 import com.epam.training.entity.Role;
 import com.epam.training.entity.User;
+import com.epam.training.exception.BadRequest;
+import com.epam.training.exception.UserNotFoundException;
 import com.epam.training.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
@@ -25,77 +27,78 @@ public class AdminController {
     @Autowired
     private UserDAO userDAO;
 
-    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
-    public ResponseEntity deleteFile(@RequestParam(required = true) String path) {
-        File file = new File(path);
-        if (file.exists()) {
-            if (isRootDirectory(file)) return new ResponseEntity(HttpStatus.BAD_REQUEST);
-            if (file.delete()) return new ResponseEntity(HttpStatus.OK);
-            else return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
-        } else return new ResponseEntity(HttpStatus.NOT_FOUND);
-    }
-
     @RequestMapping(value = "/addDirectory", method = RequestMethod.POST)
-    public ResponseEntity addDirectory(@RequestBody String path) throws IOException {
+    public FileDTO addDirectory(@RequestBody String path) throws IOException {
         File file = new File(path);
         if (!file.exists()) {
-            if (file.mkdir()) {
-                FileDTO fileDTO = FileDTO.createDTO(file);
-                return new ResponseEntity(fileDTO, HttpStatus.CREATED);
-            } else return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
-        } else return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            file.mkdir();
+            FileDTO fileDTO = FileDTO.createDTO(file);
+            return fileDTO;
+        }
+        else throw new BadRequest("Such file already exists");
     }
 
     @RequestMapping(value = "/addFile", method = RequestMethod.POST)
     public String addFile(HttpServletRequest request,
                           @RequestParam String path,
-                          @RequestParam MultipartFile file) throws IOException {
+                          @RequestParam MultipartFile file) throws Exception {
         fileService.saveFile(file, path, file.getOriginalFilename());
         return "redirect:/training/main";
     }
 
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    public void deleteFile(@RequestParam(required = true) String path) throws FileNotFoundException {
+        File file = new File(path);
+        if (file.exists()) {
+            if (isRootDirectory(file)) throw new BadRequest("Root directory cannot be deleted");
+            else file.delete();
+        }
+        else throw new FileNotFoundException("File wasn't found");
+    }
+
     @RequestMapping("/users")
     @ResponseBody
-    public ResponseEntity getUsers() {
-        return new ResponseEntity(userDAO.getUsers(), HttpStatus.OK);
+    public List<User> getUsers() {
+        return userDAO.getUsers();
     }
 
     @RequestMapping(value = "/addAdminPermissions", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity addAdminPermissions(@RequestBody User user) {
+    public void addAdminPermissions(@RequestBody User user) {
         User userPersistent = userDAO.getUser(user.getUsername());
         if (userPersistent != null) {
-            if (userPersistent.getRoles().contains(Role.ADMIN)) return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            if (userPersistent.getRoles().contains(Role.ADMIN))
+                throw new BadRequest("User already has ADMIN permissions");
             else {
                 userPersistent.addRole(Role.ADMIN);
                 userDAO.update(userPersistent);
-                return new ResponseEntity(HttpStatus.OK);
             }
-        } else return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        else throw new UserNotFoundException("User doesn't exist");
     }
 
     @RequestMapping(value = "/revokeAdminPermissions", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity revokeAdminPermissions(@RequestBody User user, Principal principal) {
+    public void revokeAdminPermissions(@RequestBody User user, Principal principal) {
         User userPersistent = userDAO.getUser(user.getUsername());
         if (userPersistent != null) {
             if (!userPersistent.getRoles().contains(Role.ADMIN)
                     || userPersistent.getUsername().equals(principal.getName()))
-                return new ResponseEntity(HttpStatus.BAD_REQUEST);
+                throw new BadRequest("User doesn't have ADMIN permissions OR permissions are revoked from logged user by logged user");
             userPersistent.getRoles().remove(Role.ADMIN);
             userDAO.update(userPersistent);
-            return new ResponseEntity(HttpStatus.OK);
-        } else return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        else throw new UserNotFoundException("User doesn't exist");
     }
 
     @RequestMapping(value = "/deleteUser", method = RequestMethod.DELETE)
     @ResponseBody
-    public ResponseEntity deleteUser(@RequestParam String username) {
+    public void deleteUser(@RequestParam String username) {
         User userPersistent = userDAO.getUser(username);
         if (userPersistent != null) {
             userDAO.delete(userPersistent);
-            return new ResponseEntity(HttpStatus.OK);
-        } else return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        else throw new UserNotFoundException("User doesn't exist");
     }
 
     private boolean isRootDirectory(File file) {
