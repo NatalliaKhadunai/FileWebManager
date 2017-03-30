@@ -29,7 +29,7 @@ public class FileServiceImpl implements FileService {
             outputStream.close();
             return newFilename;
         }
-        else throw new FileDuplicateException("File duplicate found during creation: " + newFile.getAbsolutePath());
+        else throw new FileDuplicateException("Such file already exists");
     }
 
     @Override

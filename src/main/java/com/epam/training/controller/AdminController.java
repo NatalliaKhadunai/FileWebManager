@@ -5,6 +5,7 @@ import com.epam.training.dto.FileDTO;
 import com.epam.training.entity.Role;
 import com.epam.training.entity.User;
 import com.epam.training.exception.BadRequest;
+import com.epam.training.exception.FileDuplicateException;
 import com.epam.training.exception.UserNotFoundException;
 import com.epam.training.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +32,13 @@ public class AdminController {
     public FileDTO addDirectory(@RequestBody String path) throws IOException {
         File file = new File(path);
         if (!file.exists()) {
+            if (path == null || path.replaceAll("\\+", "").isEmpty())
+                throw new BadRequest("Directory cannot be created along with root directories");
             file.mkdir();
             FileDTO fileDTO = FileDTO.createDTO(file);
             return fileDTO;
         }
-        else throw new BadRequest("Such file already exists");
+        else throw new FileDuplicateException("Such file already exists");
     }
 
     @RequestMapping(value = "/addFile", method = RequestMethod.POST)

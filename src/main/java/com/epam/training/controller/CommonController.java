@@ -14,8 +14,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -59,6 +59,7 @@ public class CommonController {
                                    @RequestParam String path) throws IOException {
         ServletContext context = request.getServletContext();
         File downloadFile = new File(path);
+        if (!downloadFile.exists()) throw new FileNotFoundException("File for downloading wasn't found");
 
         String mimeType = context.getMimeType(path);
         if (mimeType == null) {

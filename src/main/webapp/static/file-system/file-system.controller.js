@@ -12,7 +12,7 @@
                 $http.get('/training/files').then(function (response) {
                     $ctrl.files = response.data;
                 }, function (response) {
-                    alert(response.status);
+                    alert("Status code : " + response.data.httpStatusCode + "\n" + "Message : " + response.data.developerMessage);
                 });
             };
             $ctrl.updateFiles = function (chosenFile) {
@@ -25,7 +25,7 @@
                         $ctrl.files = response.data;
                         $ctrl.currentPathElements.push(chosenFile.fileName);
                     }, function (response) {
-                        alert(response.status);
+                        alert("Status code : " + response.data.httpStatusCode + "\n" + "Message : " + response.data.developerMessage);
                     });
                 }
                 else {
@@ -45,7 +45,7 @@
                         $ctrl.files.splice(index, 1);
                     }
                 }, function (response) {
-                    alert(response.status);
+                    alert("Status code : " + response.data.httpStatusCode + "\n" + "Message : " + response.data.developerMessage);
                 });
             };
             $ctrl.sort = function (sortField) {
@@ -67,7 +67,7 @@
                     }).then(function (response) {
                         $ctrl.files = response.data;
                     }, function (response) {
-                        alert(response.status);
+                        alert("Status code : " + response.data.httpStatusCode + "\n" + "Message : " + response.data.developerMessage);
                     });
                 }
                 else if ($ctrl.currentPathElements.length == 1) {
@@ -84,7 +84,7 @@
                         .then(function (response) {
                             $ctrl.files.push(response.data);
                         }, function (response) {
-                            alert(response.status);
+                            alert("Status code : " + response.data.httpStatusCode + "\n" + "Message : " + response.data.developerMessage);
                         });
                 }
             };

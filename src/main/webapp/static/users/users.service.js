@@ -18,7 +18,7 @@
             return $http.get('/training/role').then(function (response) {
                 return response.data;
             }, function (response) {
-                alert(response.status);
+                alert("Status code : " + response.data.httpStatusCode + "\n" + "Message : " + response.data.developerMessage);
             });
         }
 
@@ -26,7 +26,7 @@
             return $http.get('/training/admin/users').then(function (response) {
                 return response.data;
             }, function (response) {
-                alert(response.status);
+                alert("Status code : " + response.data.httpStatusCode + "\n" + "Message : " + response.data.developerMessage);
             });
         }
 
@@ -35,7 +35,7 @@
                 .then(function (response) {
                     user.roles.push('ADMIN');
                 }, function (response) {
-                    alert(response.status);
+                    alert("Status code : " + response.data.httpStatusCode + "\n" + "Message : " + response.data.developerMessage);
                 });
         }
 
@@ -47,7 +47,7 @@
                         user.roles.splice(index, 1);
                     }
                 }, function (response) {
-                    alert(response.status);
+                    alert("Status code : " + response.data.httpStatusCode + "\n" + "Message : " + response.data.developerMessage);
                 });
         }
 
@@ -62,7 +62,7 @@
                     $ctrl.users.splice(index, 1);
                 }
             }, function (response) {
-                alert(response.status);
+                alert("Status code : " + response.data.httpStatusCode + "\n" + "Message : " + response.data.developerMessage);
             });
         }
     }
