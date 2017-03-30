@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <USERS U_ID="0" USERNAME="admin" PASSWORD="pass" ENABLED="1"/>
+    <USERS U_ID="1" USERNAME="usr1" PASSWORD="pass" ENABLED="1"/>
+    <USERS U_ID="2" USERNAME="usr2" PASSWORD="pass" ENABLED="1"/>
+    <USERS U_ID="3" USERNAME="usr3" PASSWORD="pass" ENABLED="1"/>
+    <USERS U_ID="4" USERNAME="usr4" PASSWORD="pass" ENABLED="1"/>
+    <USERS U_ID="5" USERNAME="usr5" PASSWORD="pass" ENABLED="1"/>
+</dataset>
