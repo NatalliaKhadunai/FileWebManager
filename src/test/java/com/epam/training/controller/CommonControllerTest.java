@@ -1,5 +1,6 @@
 package com.epam.training.controller;
 
+import com.epam.training.config.GlobalExceptionHandler;
 import com.epam.training.entity.Role;
 import com.epam.training.service.FileService;
 import com.epam.training.util.ByteConverter;
@@ -30,9 +31,7 @@ import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
@@ -67,13 +66,17 @@ public class CommonControllerTest {
     @Before
     public void setup() throws IOException {
         MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(commonController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(commonController)
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .build();
         tempDir = new File("tempDir");
         if (!tempDir.exists()) tempDir.mkdir();
         tempFile = new File("tempDir\\testFile.txt");
         if (!tempFile.exists()) tempFile.createNewFile();
         tempFileAttributes = Files.readAttributes(tempFile.toPath(), BasicFileAttributes.class);
         tempDirAttributes = Files.readAttributes(tempDir.toPath(), BasicFileAttributes.class);
+
+        reset(fileService);
     }
 
     @After
@@ -134,6 +137,17 @@ public class CommonControllerTest {
         assertEquals(mvcResult.getResponse().getContentType(), "text/plain");
         assertEquals(mvcResult.getResponse().getContentAsString().length(), 0);
         verify(fileService, times(1)).writeFile(any(File.class), any(OutputStream.class));
+    }
+
+    @Test
+    public void testDownloadChosenFile_FileNotFound() throws Exception {
+        String expectedResult = "{\"httpStatusCode\":\"404\",\"developerMessage\":\"File for downloading wasn't found\",\"url\":\"/downloadFile\",\"method\":\"GET\",\"moreInfo\":null}";
+
+        MvcResult mvcResult = mockMvc.perform(get("/downloadFile")
+                .param("path", tempFile.getAbsolutePath() + "ABRAKADABRA"))
+                .andExpect(status().isNotFound())
+                .andReturn();
+        assertTrue(mvcResult.getResponse().getContentAsString().contains(expectedResult));
     }
 
     @Test

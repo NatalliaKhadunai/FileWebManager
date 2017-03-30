@@ -1,6 +1,7 @@
 package com.epam.training.config;
 
 import com.epam.training.exception.BadRequest;
+import com.epam.training.exception.FileDuplicateException;
 import com.epam.training.exception.UserNotFoundException;
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpHeaders;
@@ -27,6 +28,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         exceptionStatus.put(FileNotFoundException.class, HttpStatus.NOT_FOUND);
         exceptionStatus.put(BadRequest.class, HttpStatus.BAD_REQUEST);
         exceptionStatus.put(UserNotFoundException.class, HttpStatus.NOT_FOUND);
+        exceptionStatus.put(FileDuplicateException.class, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = Exception.class)

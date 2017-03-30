@@ -4,13 +4,14 @@
 		module="TrainingProject"
 		revision="1.0-SNAPSHOT"
 		status="integration"
-		publication="20170329174713"
+		publication="20170330124604"
 	>
 		<description homepage="" />
 		<m:properties__hibernate.version>5.2.9.Final</m:properties__hibernate.version>
 		<m:properties__spring.security.version>4.2.2.RELEASE</m:properties__spring.security.version>
 		<m:properties__jstl.version>1.2</m:properties__jstl.version>
 		<m:properties__spring.version>4.3.1.RELEASE</m:properties__spring.version>
+		<m:properties__jackson.version>2.8.7</m:properties__jackson.version>
 		<m:maven.plugins>org.apache.tomcat.maven__tomcat7-maven-plugin__2.2|org.apache.maven.plugins__maven-compiler-plugin__3.5.1|org.apache.maven.plugins__maven-war-plugin__null</m:maven.plugins>
 	</info>
 	<configurations>
@@ -40,6 +41,7 @@
 		<dependency org="org.springframework.security" name="spring-security-config" rev="4.2.2.RELEASE" force="true" conf="compile->compile(*),master(*);runtime->runtime(*)"/>
 		<dependency org="org.springframework.security" name="spring-security-taglibs" rev="4.2.2.RELEASE" force="true" conf="compile->compile(*),master(*);runtime->runtime(*)"/>
 		<dependency org="mysql" name="mysql-connector-java" rev="5.1.41" force="true" conf="compile->compile(*),master(*);runtime->runtime(*)"/>
+		<dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.8.7" force="true" conf="compile->compile(*),master(*);runtime->runtime(*)"/>
 		<dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.8.7" force="true" conf="compile->compile(*),master(*);runtime->runtime(*)"/>
 		<dependency org="jstl" name="jstl" rev="1.2" force="true" conf="compile->compile(*),master(*);runtime->runtime(*)"/>
 		<dependency org="log4j" name="log4j" rev="1.2.17" force="true" conf="compile->compile(*),master(*);runtime->runtime(*)"/>

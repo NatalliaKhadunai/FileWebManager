@@ -29,10 +29,11 @@ public class AdminController {
     private UserDAO userDAO;
 
     @RequestMapping(value = "/addDirectory", method = RequestMethod.POST)
+    @ResponseBody
     public FileDTO addDirectory(@RequestBody String path) throws IOException {
         File file = new File(path);
         if (!file.exists()) {
-            if (path == null || path.replaceAll("\\+", "").isEmpty())
+            if (path == null || path.replaceAll("\\\\*", "").isEmpty())
                 throw new BadRequest("Directory cannot be created along with root directories");
             file.mkdir();
             FileDTO fileDTO = FileDTO.createDTO(file);
