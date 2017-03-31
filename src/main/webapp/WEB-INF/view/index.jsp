@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Main</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.4.2/angular-ui-router.min.js"></script>
+    <link rel="stylesheet" href="static/js-test/node_modules/bootstrap/dist/css/bootstrap.css">
+    <script src="static/js-test/node_modules/jquery/dist/jquery.js"></script>
+    <link rel="stylesheet" href="static/js-test/node_modules/bootstrap/dist/js/bootstrap.js">
+    <script src="static/js-test/node_modules/angular/angular.js"></script>
+    <script src="static/js-test/node_modules/angular-ui-router/release/angular-ui-router.js"></script>
     <script src="static/app.js"></script>
     <script src="static/users/users.service.js"></script>
     <script src="static/users/users.component.js"></script>

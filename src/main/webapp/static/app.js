@@ -1,9 +1,5 @@
 (function () {
     'use strict';
-    angular.module('fileApp', []);
-})();
-(function () {
-    'use strict';
     angular.module('fileApp',['ui.router']).config(function ($stateProvider, $urlRouterProvider) {
         $urlRouterProvider.otherwise('/');
         $stateProvider

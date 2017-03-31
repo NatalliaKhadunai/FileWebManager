@@ -12,7 +12,7 @@ import java.util.Date;
 public class FileDTO {
     private String fileName;
     private String fullPath;
-    String contentType;
+    private String contentType;
     private boolean isDirectory;
     private Date creationDate;
     private Date modificationDate;
