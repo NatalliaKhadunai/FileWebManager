@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Main</title>
-    <link rel="stylesheet" href="static/js-test/node_modules/bootstrap/dist/css/bootstrap.css">
-    <script src="static/js-test/node_modules/jquery/dist/jquery.js"></script>
-    <link rel="stylesheet" href="static/js-test/node_modules/bootstrap/dist/js/bootstrap.js">
-    <script src="static/js-test/node_modules/angular/angular.js"></script>
-    <script src="static/js-test/node_modules/angular-ui-router/release/angular-ui-router.js"></script>
+    <link rel="stylesheet" href="static/node_modules/bootstrap/dist/css/bootstrap.css">
+    <script src="static/node_modules/jquery/dist/jquery.js"></script>
+    <link rel="stylesheet" href="static/node_modules/bootstrap/dist/js/bootstrap.js">
+    <script src="static/node_modules/angular/angular.js"></script>
+    <script src="static/node_modules/angular-ui-router/release/angular-ui-router.js"></script>
     <script src="static/app.js"></script>
     <script src="static/users/users.service.js"></script>
     <script src="static/users/users.component.js"></script>

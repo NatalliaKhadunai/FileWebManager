@@ -15,12 +15,14 @@
                     alert("Status code : " + response.data.httpStatusCode + "\n" + "Message : " + response.data.developerMessage);
                 });
             };
+            $ctrl.loadRootFiles();
+
             $ctrl.updateFiles = function (chosenFile) {
                 if (chosenFile.directory) {
                     $http({
                         url: '/training/files',
                         method: 'GET',
-                        params: {path: $ctrl.formCurrentPath() + '\\' + chosenFile.fileName}
+                        params: {path: $ctrl.formCurrentPath() + chosenFile.fileName}
                     }).then(function (response) {
                         $ctrl.files = response.data;
                         $ctrl.currentPathElements.push(chosenFile.fileName);
@@ -30,7 +32,7 @@
                 }
                 else {
                     var url = '/training/downloadFile';
-                    var param = 'path=' + $ctrl.formCurrentPath() + '\\' + chosenFile.fileName;
+                    var param = 'path=' + $ctrl.formCurrentPath() + chosenFile.fileName;
                     $window.open(encodeURI(url + '?' + param));
                 }
             };
@@ -38,7 +40,7 @@
                 $http({
                     url: '/training/admin/delete',
                     method: 'DELETE',
-                    params: {path: $ctrl.formCurrentPath() + '\\' + chosenFile.fileName}
+                    params: {path: $ctrl.formCurrentPath() + chosenFile.fileName}
                 }).then(function () {
                     var index = $ctrl.files.indexOf(chosenFile);
                     if (index > -1) {
@@ -80,7 +82,7 @@
                     alert('Directory shouldn\'t be created along with root directories');
                 else {
                     $http.post('/training/admin/addDirectory',
-                        $ctrl.formCurrentPath() + '\\' + $ctrl.newDirectoryName)
+                        $ctrl.formCurrentPath() + $ctrl.newDirectoryName)
                         .then(function (response) {
                             $ctrl.files.push(response.data);
                         }, function (response) {
@@ -89,7 +91,8 @@
                 }
             };
             $ctrl.formCurrentPath = function () {
-                return $ctrl.currentPathElements.join('\\');
+                if ($ctrl.currentPathElements.length !== 0) return $ctrl.currentPathElements.join('\\') + '\\';
+                else return '';
             };
             $ctrl.isLoggedUserAdmin = function () {
                 for (var i=0;i<$ctrl.userRoles.length;i++) {
@@ -97,6 +100,5 @@
                 };
                 return false;
             };
-            $ctrl.loadRootFiles();
         });
 })();

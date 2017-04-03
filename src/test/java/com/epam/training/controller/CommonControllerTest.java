@@ -91,7 +91,6 @@ public class CommonControllerTest {
         assertEquals(mvcResult.getModelAndView().getViewName(), "index.jsp");
     }
 
-    //Test result depends on OS. Current test is for Windows OS
     @Test
     public void testGetFile_NoPathSpecified() throws Exception {
         File rootFile = File.listRoots()[0];
