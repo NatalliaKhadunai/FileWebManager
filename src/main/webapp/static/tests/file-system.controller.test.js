@@ -31,30 +31,36 @@ describe('file-system controller tests', function () {
         var controller = $controller('fileSystemCtrl');
         $httpBackend.when('GET', '/training/files').respond(httpDataDirectory);
         $httpBackend.flush();
-        excpect(controller.files.length).toBeGreaterThan(0);
+        expect(controller.files.length).toBeGreaterThan(0);
         expect(controller.files).toEqual(httpDataDirectory);
     });
 
-    /*it('delete file (with mock http request)', function () {
+    it('update files (with mock http request)', function () {
         var controller = $controller('fileSystemCtrl');
-        console.log('INITIAL' + controller.files.length);
+        $httpBackend.when('GET', '/training/files').respond(httpDataDirectory);
+        $httpBackend.when('GET', function (url) {
+            console.log(url);
+            return (url.indexOf('/training/files') !== -1 && url.indexOf('path') !== -1);
+        }).respond(httpDataFile);
+        controller.updateFiles(httpDataDirectory[0]);
+        $httpBackend.flush();
+
+        expect(controller.files.length).toBe(1);
+        expect(controller.files[0]).toEqual(httpDataFile[0]);
+        expect(controller.currentPathElements[0]).toEqual(httpDataDirectory[0].fileName);
+    });
+
+    it('delete file (with mock http request)', function () {
+        var controller = $controller('fileSystemCtrl');
         $httpBackend.when('GET', '/training/files').respond(httpDataFile);
         $httpBackend.when('DELETE', function (url) {
-            console.log(url);
             return url.indexOf('/training/admin/delete') !== -1;
         }).respond(200);
         controller.deleteFile(httpDataFile[0]);
         $httpBackend.flush();
 
-        console.log('AFTER EXEC ' + controller.files.length);
-        console.log(controller.files[0]);
-        console.log(httpDataFile[0]);
-        console.log('INDEX ' + httpDataFile.indexOf(httpDataFile[0]));
-        console.log('INDEX ' + controller.files.indexOf(httpDataFile[0]));
-
-        expect(controller.files[0]).toEqual(httpDataFile[0]);
         expect(controller.files.length).toBe(0);
-    });*/
+    });
 
     it('directory back (one element in current path)', function () {
         var controller = $controller('fileSystemCtrl');

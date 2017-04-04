@@ -42,7 +42,10 @@
                     method: 'DELETE',
                     params: {path: $ctrl.formCurrentPath() + chosenFile.fileName}
                 }).then(function () {
-                    var index = $ctrl.files.indexOf(chosenFile);
+                    var index = -1;
+                    for (var i=0;i<$ctrl.files.length;i++) {
+                        if (JSON.stringify($ctrl.files[i]) === JSON.stringify(chosenFile)) index = i;
+                    }
                     if (index > -1) {
                         $ctrl.files.splice(index, 1);
                     }
